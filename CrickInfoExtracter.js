@@ -24,7 +24,6 @@ let args=minimist(process.argv)
 let responsepromise=axios.get(args.source);
 responsepromise.then(function (response) {
     let html=response.data;
-    // console.log(html);
     let dom=new jsdom.JSDOM(html);
     let document=dom.window.document;
     let matchScoreDivs=document.querySelectorAll("div.match-score-block");
@@ -58,10 +57,9 @@ responsepromise.then(function (response) {
         let spanresult=matchScoreDivs[i].querySelector("div.status-text>span");
         match.result=spanresult.textContent;
         matches.push(match);
-        // console.log(t1s);
-        // console.log(t2s);
     }
-    console.log(matches);
+    let info=JSON.stringify(matches);
+    fs.writeFileSync(args.dest,info,"utf-8");
 }).catch(function(err){
-    console(err);
+    console.log("err");
 })
