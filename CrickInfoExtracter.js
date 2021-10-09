@@ -58,8 +58,96 @@ responsepromise.then(function (response) {
         match.result=spanresult.textContent;
         matches.push(match);
     }
-    let info=JSON.stringify(matches);
-    fs.writeFileSync(args.dest,info,"utf-8");
+    let teams=[];
+    for(let i=0;i<matches.length;i++)
+    {
+        fillTeams(teams,matches[i]);
+    }
+
+
+
+    for(let i=0;i<teams.length;i++)
+    {
+        fillMatches(teams[i],matches);
+    }
+
+    teamsInfo=JSON.stringify(teams);
+    // console.log(teamsInfo);
+    fs.writeFileSync("teamsInformation.json",teamsInfo,"utf-8");
 }).catch(function(err){
-    console.log("err");
+    console.log(err);
 })
+
+function fillMatches(team,prevjson)
+{
+    for(let i=0;i<prevjson.length;i++)
+    {
+        if(prevjson[i].t1==team.name)
+        {
+            team.matches.push({
+                vs:prevjson[i].t2,
+                selfScore:prevjson[i].t1s,
+                oppScore:prevjson[i].t2s,
+                result:prevjson[i].result
+            })
+        }
+    }
+
+    for(let i=0;i<prevjson.length;i++)
+    {
+        if(prevjson[i].t2==team.name)
+        {
+            team.matches.push({
+                vs:prevjson[i].t1,
+                selfScore:prevjson[i].t2s,
+                oppScore:prevjson[i].t1s,
+                result:prevjson[i].result
+            })
+        }
+    }
+}
+
+
+
+function fillTeams(teams,match)
+{
+    let idx1=-1;
+    for(let i=0;i<teams.length;i++)
+    {
+        if(teams[i].name==match.t1)
+        {
+            idx1=i;
+            break;
+        }
+    }
+    let team={
+        name:"",
+        matches:[]
+    }
+    if(idx1==-1)
+    {
+        team.name=match.t1;
+        teams.push(team);
+    }
+
+
+    let idx2=-1;
+    for(let i=0;i<teams.length;i++)
+    {
+        if(teams[i].name==match.t2)
+        {
+            idx2=i;
+            break;
+        }
+    }
+    team={
+        name:"",
+        matches:[]
+    }
+    if(idx2==-1)
+    {
+        team.name=match.t2;
+        teams.push(team);
+    }
+}
+
