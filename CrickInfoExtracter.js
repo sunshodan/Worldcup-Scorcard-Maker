@@ -148,4 +148,3 @@ function fillTeams(teams,match)
         teams.push(team);
     }
 }
-

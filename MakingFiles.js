@@ -54,9 +54,9 @@ for(let i=0;i<teamsInfo.length;i++)
     for(let j=0;j<teamsInfo[i].matches.length;j++)
     {
         let matchFileName=path.join(folderPath,teamsInfo[i].matches[j].vs + ".pdf")//making path for our pdfs
-        fs.writeFileSync(matchFileName,"","utf-8");//making pdfs of vs names
+        // fs.writeFileSync(matchFileName,"","utf-8");//making pdfs of vs names
         // console.log(matchFileName);
-        createScorceCard(teamsInfo[i].matches[j],matchFileName,teamsInfo[i].name,count);
+        createScorceCard(teamsInfo[i].matches[j],matchFileName,teamsInfo[i].name);
     }
 }
 
@@ -109,8 +109,25 @@ function createScorceCard(teamsObject,filePath,teamName)
         });
         let promiseToSave=pdfDoc.save();
         promiseToSave.then(function(changedBytes){ 
-            fs.writeFileSync(filePath,changedBytes);
+            if(fs.existsSync(filePath))
+            {
+                filePath=filePath.slice(0,filePath.length-4)+"1"+".pdf";
+                fs.writeFileSync(filePath,changedBytes);
+            }
+            // abcdef.pdf
+            else
+            {
+                fs.writeFileSync(filePath,changedBytes);
+            }
         })
+        // if(fs.existsSync(matchFileName+".pdf")==true)
+        //    {
+        //        fs.writeFileSync(matchFileName+"1.pdf",changedBytes)
+
+        //    }
+        //    else{
+        //        fs.writeFileSync(matchFileName+".pdf",changedBytes)
+        //    }
         // console.log("OK");
     })
 }
